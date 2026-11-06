@@ -54,9 +54,12 @@ jobs:
         run: |
           OIDC_TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
             "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=pypi" | python3 -c "import sys,json; print(json.load(sys.stdin)['value'])")
-          PYPI_TOKEN=$(curl -sS -X POST https://upload.pypi.org/legacy/_/oidc/mint-token \
+          echo "OIDC token acquired"
+          MINT_RESP=$(curl -sS -X POST https://pypi.org/_/oidc/mint-token \
             -H "Content-Type: application/json" \
-            -d "{\"token\": \"$OIDC_TOKEN\"}" | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
+            -d "{\"token\": \"$OIDC_TOKEN\"}")
+          echo "Mint response: $MINT_RESP"
+          PYPI_TOKEN=$(echo "$MINT_RESP" | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
           python -m twine upload --verbose \
             -u __token__ -p "$PYPI_TOKEN" \
             dist/*
