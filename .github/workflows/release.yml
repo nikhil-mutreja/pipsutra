@@ -30,11 +30,33 @@ jobs:
           path: dist/
           if-no-files-found: error
 
-  publish:
+  publish-testpypi:
+    name: Publish to TestPyPI
     needs: build
     runs-on: ubuntu-latest
     environment:
+      name: testpypi
+      url: https://test.pypi.org/p/pipsutra
+    permissions:
+      id-token: write
+    steps:
+      - name: Download distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: python-distributions
+          path: dist/
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://upload.test.pypi.org/legacy/
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: publish-testpypi
+    runs-on: ubuntu-latest
+    environment:
       name: pypi
+      url: https://pypi.org/p/pipsutra
     permissions:
       id-token: write
     steps:
