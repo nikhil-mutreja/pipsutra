@@ -1,0 +1,456 @@
+{
+  "$defs": {
+    "Dependency": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "normalized_name": {
+          "title": "Normalized Name",
+          "type": "string"
+        },
+        "specifier": {
+          "default": "",
+          "title": "Specifier",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "group": {
+          "default": "main",
+          "title": "Group",
+          "type": "string"
+        },
+        "marker": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Marker"
+        },
+        "active": {
+          "default": true,
+          "title": "Active",
+          "type": "boolean"
+        },
+        "direct": {
+          "default": true,
+          "title": "Direct",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "normalized_name",
+        "source"
+      ],
+      "title": "Dependency",
+      "type": "object"
+    },
+    "DependencyEdge": {
+      "properties": {
+        "parent": {
+          "title": "Parent",
+          "type": "string"
+        },
+        "child": {
+          "title": "Child",
+          "type": "string"
+        },
+        "requirement": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Requirement"
+        },
+        "marker": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Marker"
+        }
+      },
+      "required": [
+        "parent",
+        "child"
+      ],
+      "title": "DependencyEdge",
+      "type": "object"
+    },
+    "Inventory": {
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "generated_at": {
+          "format": "date-time",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "project_path": {
+          "title": "Project Path",
+          "type": "string"
+        },
+        "environment_path": {
+          "title": "Environment Path",
+          "type": "string"
+        },
+        "declared_dependencies": {
+          "items": {
+            "$ref": "#/$defs/Dependency"
+          },
+          "title": "Declared Dependencies",
+          "type": "array"
+        },
+        "packages": {
+          "items": {
+            "$ref": "#/$defs/Package"
+          },
+          "title": "Packages",
+          "type": "array"
+        },
+        "edges": {
+          "items": {
+            "$ref": "#/$defs/DependencyEdge"
+          },
+          "title": "Edges",
+          "type": "array"
+        },
+        "missing_declared": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing Declared",
+          "type": "array"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "discovery_status": {
+          "default": "complete",
+          "enum": [
+            "complete",
+            "partial"
+          ],
+          "title": "Discovery Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_path",
+        "environment_path"
+      ],
+      "title": "Inventory",
+      "type": "object"
+    },
+    "Package": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "normalized_name": {
+          "title": "Normalized Name",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Location"
+        },
+        "direct": {
+          "default": false,
+          "title": "Direct",
+          "type": "boolean"
+        },
+        "dependency_depth": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dependency Depth"
+        },
+        "metadata_complete": {
+          "default": true,
+          "title": "Metadata Complete",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "normalized_name",
+        "version"
+      ],
+      "title": "Package",
+      "type": "object"
+    },
+    "RiskSummary": {
+      "properties": {
+        "score": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Score",
+          "type": "integer"
+        },
+        "level": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH",
+            "CRITICAL",
+            "UNKNOWN"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "explanation": {
+          "title": "Explanation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "score",
+        "level",
+        "explanation"
+      ],
+      "title": "RiskSummary",
+      "type": "object"
+    },
+    "StaticFinding": {
+      "properties": {
+        "rule_id": {
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "confidence": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ],
+          "title": "Confidence",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "file": {
+          "title": "File",
+          "type": "string"
+        },
+        "line": {
+          "title": "Line",
+          "type": "integer"
+        },
+        "evidence": {
+          "title": "Evidence",
+          "type": "string"
+        },
+        "recommendation": {
+          "title": "Recommendation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_id",
+        "title",
+        "severity",
+        "confidence",
+        "message",
+        "file",
+        "line",
+        "evidence",
+        "recommendation"
+      ],
+      "title": "StaticFinding",
+      "type": "object"
+    },
+    "VulnerabilityFinding": {
+      "properties": {
+        "package": {
+          "title": "Package",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        },
+        "vulnerability_id": {
+          "title": "Vulnerability Id",
+          "type": "string"
+        },
+        "summary": {
+          "default": "",
+          "title": "Summary",
+          "type": "string"
+        },
+        "details": {
+          "default": "",
+          "title": "Details",
+          "type": "string"
+        },
+        "aliases": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Aliases",
+          "type": "array"
+        },
+        "references": {
+          "items": {
+            "type": "string"
+          },
+          "title": "References",
+          "type": "array"
+        },
+        "severity": {
+          "default": "UNKNOWN",
+          "title": "Severity",
+          "type": "string"
+        },
+        "source": {
+          "default": "OSV",
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "package",
+        "version",
+        "vulnerability_id"
+      ],
+      "title": "VulnerabilityFinding",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "tool": {
+      "default": "PipSutra",
+      "title": "Tool",
+      "type": "string"
+    },
+    "tool_version": {
+      "title": "Tool Version",
+      "type": "string"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "project_path": {
+      "title": "Project Path",
+      "type": "string"
+    },
+    "environment_path": {
+      "title": "Environment Path",
+      "type": "string"
+    },
+    "inventory": {
+      "$ref": "#/$defs/Inventory"
+    },
+    "vulnerabilities": {
+      "items": {
+        "$ref": "#/$defs/VulnerabilityFinding"
+      },
+      "title": "Vulnerabilities",
+      "type": "array"
+    },
+    "static_findings": {
+      "items": {
+        "$ref": "#/$defs/StaticFinding"
+      },
+      "title": "Static Findings",
+      "type": "array"
+    },
+    "risk": {
+      "$ref": "#/$defs/RiskSummary"
+    },
+    "checks": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Checks",
+      "type": "object"
+    },
+    "errors": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Errors",
+      "type": "array"
+    }
+  },
+  "required": [
+    "tool_version",
+    "project_path",
+    "environment_path",
+    "inventory",
+    "risk"
+  ],
+  "title": "ScanReport",
+  "type": "object"
+}
