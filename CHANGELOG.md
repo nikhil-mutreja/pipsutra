@@ -4,12 +4,6 @@ All notable changes to PipSutra are documented here.
 
 ## [0.1.0] - 2026-12-01
 
-- Initial planned public release.
-- Project renamed from DepGuard to PipSutra before publication.
-- Developer attribution: Nikhil Mutreja.
-
-## [0.1.0] - Unreleased
-
 ### Added
 
 - Read declared dependencies from `requirements.txt` and PEP 621 dependency
@@ -17,12 +11,15 @@ All notable changes to PipSutra are documented here.
 - Inspect installed distribution metadata without importing package modules.
 - Infer direct/transitive dependency reachability from installed metadata.
 - Query exact installed PyPI package versions through the OSV batch API.
-- Add four explainable Python AST rules for dynamic execution, shell command
-  execution, and unsafe pickle deserialization.
-- Produce versioned JSON scan reports and terminal summaries.
-- Add severity-based CI exit gating with `--fail-on`.
-- Add tests, cross-platform CI configuration, security policy, and a PyPI
-  Trusted Publishing release workflow.
+- Four explainable Python AST rules: `DG-PY-001` (`eval`/`exec`),
+  `DG-PY-002` (`os.system`), `DG-PY-003` (subprocess `shell=True`),
+  `DG-PY-004` (`pickle.loads`).
+- Versioned JSON scan reports and terminal summaries.
+- Severity-based CI exit gating with `--fail-on`.
+- Cross-platform CI (Linux, Windows, macOS; Python 3.11–3.13).
+- PyPI Trusted Publishing release workflow.
+- Developer attribution: Nikhil Mutreja.
+- Apache-2.0 license.
 
 ### Limitations
 
@@ -31,6 +28,6 @@ All notable changes to PipSutra are documented here.
 - Vulnerability coverage depends on OSV availability and data quality.
 - Static rules are intentionally limited and can produce false positives and
   false negatives.
-- The aggregate risk score is a heuristic, not a calibrated probability.
-- The PyPI distribution name must be finalized before publishing; see
-  [docs/RELEASING.md](docs/RELEASING.md).
+- The aggregate risk score is a heuristic, not a calibrated probability or
+  safety certification.
+- Marker evaluation reflects the running interpreter/platform only.
